@@ -1,9 +1,8 @@
 const express = require("express");
+const api = require("./api"); // Import the main API router
+
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("API is working!");
-});
+app.use("/api", api);
 
 module.exports = app;
-// test comment
