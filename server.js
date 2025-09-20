@@ -1,13 +1,9 @@
-const express = require("express");
+// Import the configured app from the src folder
+const app = require("./src/app");
 
-const app = express();
+const PORT = process.env.PORT || 5000;
 
-const PORT = 5000;
-
-app.get("/", (req, res) => {
-  res.send("Trello-Lite API is up and running!");
-});
-
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server is successfully running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
