@@ -1,5 +1,7 @@
-// src/api/routes/listRoutes.js
 const express = require("express");
+
+const cardRouter = require("./cardRoutes");
+
 const {
   createList,
   getListsByBoard,
@@ -17,5 +19,9 @@ router.route("/").post(createList).get(getListsByBoard);
 
 // Routes for a single list
 router.route("/:listId").get(getListById).put(updateList).delete(deleteList);
+
+// MOUNT the card router
+// Forward any request on this path to the card router
+router.use("/:listId/cards", cardRouter);
 
 module.exports = router;
