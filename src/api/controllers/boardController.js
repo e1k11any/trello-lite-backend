@@ -3,6 +3,7 @@ const Board = require("../models/Board");
 // @desc    Create a new board
 // @route   POST /api/boards
 // @access  Public (for now)
+
 const createBoard = async (req, res) => {
   try {
     const { name, description } = req.body;
