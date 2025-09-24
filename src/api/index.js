@@ -1,13 +1,12 @@
 const express = require("express");
 const boardRoutes = require("./routes/boardRoutes");
 const userRoutes = require("./routes/userRoutes");
+const path = require("path");
 
 const router = express.Router();
 
 router.get("/", (req, res) => {
-  res.json({
-    message: "API is working",
-  });
+  res.sendFile(path.resolve(__dirname, "../../public/api-docs.html"));
 });
 
 router.use("/boards", boardRoutes);

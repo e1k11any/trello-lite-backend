@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-g" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trello-Lite API Documentation</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f7f9;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+      p {
+        color: #555;
+      }
+      code {
+        background-color: #ecf0f1;
+        color: #2c3e50;
+        padding: 3px 6px;
+        border-radius: 4px;
+      }
+      .endpoint {
+        background-color: #fafafa;
+        border: 1px solid #ddd;
+        padding: 15px;
+        margin: 1rem 0;
+        border-radius: 5px;
+      }
+      .method {
+        font-weight: bold;
+        color: #fff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        margin-right: 15px;
+      }
+      .get {
+        background-color: #3498db;
+      }
+      .post {
+        background-color: #2ecc71;
+      }
+      .put {
+        background-color: #f39c12;
+      }
+      .delete {
+        background-color: #e74c3c;
+      }
+      footer {
+        text-align: center;
+        margin-top: 2rem;
+        color: #777;
+      }
+      a {
+        color: #3498db;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Welcome to the Trello-Lite API! 👋</h1>
+      <p>
+        This is the backend service for a real-time, collaborative project
+        management application. All protected routes require a
+        <code>Bearer Token</code> for authentication.
+      </p>
+
+      <h2>Key Endpoints</h2>
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/users/register</code> - Register a new user.
+      </div>
+
+      <div class="endpoint">
+        <span class="method post">POST</span>
+        <code>/api/users/login</code> - Log in and receive a JWT.
+      </div>
+
+      <div class="endpoint">
+        <span class="method get">GET</span>
+        <code>/api/boards</code> - Get all boards for the logged-in user.
+      </div>
+
+      <p>... and many more!</p>
+
+      <p>
+        For complete, detailed documentation of all endpoints, please visit the
+        project's GitHub repository.
+      </p>
+      <p>
+        <a
+          href="https://github.com/e1k11any/trello-lite-backend"
+          target="_blank"
+          >View Full Documentation on GitHub</a
+        >
+      </p>
+
+      <footer>
+        <p>API is live and running.</p>
+      </footer>
+    </div>
+  </body>
+</html>
