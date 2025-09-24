@@ -1,5 +1,6 @@
 const Card = require("../models/Card");
 const List = require("../models/List");
+const { getIO } = require("../../socket");
 
 // @desc    Create a card for a specific list
 // @route   POST /api/boards/:boardId/lists/:listId/cards
@@ -61,6 +62,14 @@ const updateCard = async (req, res) => {
     });
     if (!updatedCard)
       return res.status(404).json({ message: "Card not found" });
+
+    // --- REAL-TIME EMIT ---
+    // Get the io instance
+    const io = getIO();
+    // Emit an event to the specific board's room
+    io.to(updatedCard.board.toString()).emit("card:update", updatedCard);
+    // ---------------------
+
     res.status(200).json(updatedCard);
   } catch (error) {
     res.status(500).json({ message: error.message });
