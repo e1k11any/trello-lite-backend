@@ -11,6 +11,7 @@ const {
   getBoardById,
   updateBoard,
   deleteBoard,
+  addMemberToBoard,
 } = require("../controllers/boardController");
 
 // Routes for getting all boards and creating a new board
@@ -22,6 +23,10 @@ router
   .get(protect, checkBoardMembership, getBoardById)
   .put(protect, checkBoardMembership, updateBoard)
   .delete(protect, checkBoardMembership, deleteBoard);
+
+router
+  .route("/:id/members")
+  .post(protect, checkBoardMembership, addMemberToBoard);
 
 router.use("/:boardId/lists", protect, checkBoardMembership, listRouter);
 module.exports = router;
