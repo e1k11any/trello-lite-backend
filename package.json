@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": "v22.18.0"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.2",
