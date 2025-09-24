@@ -14,6 +14,7 @@ const createBoard = async (req, res) => {
     const newBoard = await Board.create({
       name,
       description,
+      user: req.user._id, // Assign the logged-in user's ID
     });
     // Respond with a 201 (Created) status and the new board data
     res.status(201).json(newBoard);
@@ -30,7 +31,9 @@ const createBoard = async (req, res) => {
 // @access  Public (for now)
 const getAllBoards = async (req, res) => {
   try {
-    const boards = await Board.find({});
+    // In the getAllBoards function in boardController.js
+    // Find only the boards where the 'user' field matches the logged-in user's ID
+    const boards = await Board.find({ user: req.user._id });
     res.status(200).json(boards);
   } catch (error) {
     // If anything goes wrong, send a 500 status

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const { protect } = require("../middleware/authMiddleware");
 
 const listRouter = require("./listRoutes");
 
@@ -12,10 +13,14 @@ const {
 } = require("../controllers/boardController");
 
 // Routes for getting all boards and creating a new board
-router.route("/").get(getAllBoards).post(createBoard);
+router.route("/").get(protect, getAllBoards).post(protect, createBoard);
 
 // Routes for getting, updating, and deleting a single board by its ID
-router.route("/:id").get(getBoardById).put(updateBoard).delete(deleteBoard);
+router
+  .route("/:id")
+  .get(protect, getBoardById)
+  .put(protect, updateBoard)
+  .delete(protect, deleteBoard);
 
 // MOUNT the list router on the specific path
 // Any request to /:boardId/lists will be forwarded to our listRouter
