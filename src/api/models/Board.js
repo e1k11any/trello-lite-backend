@@ -2,11 +2,24 @@ const mongoose = require("mongoose");
 
 const boardSchema = new mongoose.Schema(
   {
-    user: {
+    owner: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: "User", // Creates a reference to the User model
+      ref: "User",
     },
+    members: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        role: {
+          type: String,
+          enum: ["admin", "member"],
+          default: "member",
+        },
+      },
+    ],
 
     // A board must have a name.
     name: {
