@@ -12,6 +12,7 @@ const {
   updateBoard,
   deleteBoard,
   addMemberToBoard,
+  getBoardActivities,
 } = require("../controllers/boardController");
 
 // Routes for getting all boards and creating a new board
@@ -27,6 +28,10 @@ router
 router
   .route("/:id/members")
   .post(protect, checkBoardMembership, addMemberToBoard);
+
+router
+  .route("/:id/activities")
+  .get(protect, checkBoardMembership, getBoardActivities);
 
 router.use("/:boardId/lists", protect, checkBoardMembership, listRouter);
 module.exports = router;

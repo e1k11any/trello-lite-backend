@@ -1,4 +1,3 @@
-// src/api/models/List.js
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
