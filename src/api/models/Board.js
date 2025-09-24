@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 
 const boardSchema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User", // Creates a reference to the User model
+    },
+
     // A board must have a name.
     name: {
       type: String,
