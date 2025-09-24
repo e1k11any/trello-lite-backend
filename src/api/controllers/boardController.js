@@ -37,12 +37,12 @@ const createBoard = async (req, res) => {
 // @access  Public (for now)
 const getAllBoards = async (req, res) => {
   try {
-    // In the getAllBoards function in boardController.js
-    // Find only the boards where the 'user' field matches the logged-in user's ID
-    const boards = await Board.find({ user: req.user._id });
+    // CORRECTED: Find all boards where the logged-in user's ID
+    // exists in the 'user' field inside the 'members' array.
+    const boards = await Board.find({ "members.user": req.user._id });
+
     res.status(200).json(boards);
   } catch (error) {
-    // If anything goes wrong, send a 500 status
     res
       .status(500)
       .json({ message: "Error fetching boards", error: error.message });
