@@ -1,4 +1,5 @@
 const Board = require("../models/Board");
+const User = require("../models/User");
 
 // @desc    Create a new board
 // @route   POST /api/boards
@@ -122,10 +123,66 @@ const deleteBoard = async (req, res) => {
   }
 };
 
+// @desc    Add a member to a board
+// @route   POST /api/boards/:id/members
+// @access  Private (Admins only)
+const addMemberToBoard = async (req, res) => {
+  try {
+    // 1. Authorization: Check if the current user is an admin of this board.
+    //    The 'req.membership' object was attached by our authzMiddleware.
+    if (req.membership.role !== "admin") {
+      return res
+        .status(403)
+        .json({ message: "Forbidden: Only admins can add members" });
+    }
+
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Please provide a user email" });
+    }
+
+    // 2. Find the user to be added by their email
+    const userToAdd = await User.findOne({ email: email.toLowerCase() });
+    if (!userToAdd) {
+      return res
+        .status(404)
+        .json({ message: "User with that email not found" });
+    }
+
+    // 3. Check if the user is already a member of the board
+    const isAlreadyMember = req.board.members.some((m) =>
+      m.user.equals(userToAdd._id)
+    );
+
+    if (isAlreadyMember) {
+      return res
+        .status(400)
+        .json({ message: "User is already a member of this board" });
+    }
+
+    // 4. Add the new member and save the board
+    req.board.members.push({ user: userToAdd._id, role: "member" }); // role is 'member' by default
+    await req.board.save();
+
+    // To provide a useful response, we can populate the user details for the members list
+    const updatedBoard = await Board.findById(req.board._id).populate(
+      "members.user",
+      "name email"
+    );
+
+    res.status(200).json(updatedBoard.members);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error adding member", error: error.message });
+  }
+};
+
 module.exports = {
   createBoard,
   getAllBoards,
   getBoardById,
   updateBoard,
   deleteBoard,
+  addMemberToBoard,
 };
