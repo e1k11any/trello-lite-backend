@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
+const { checkBoardMembership } = require("../middleware/authzMiddleware");
 
 const listRouter = require("./listRoutes");
 
@@ -18,11 +19,9 @@ router.route("/").get(protect, getAllBoards).post(protect, createBoard);
 // Routes for getting, updating, and deleting a single board by its ID
 router
   .route("/:id")
-  .get(protect, getBoardById)
-  .put(protect, updateBoard)
-  .delete(protect, deleteBoard);
+  .get(protect, checkBoardMembership, getBoardById)
+  .put(protect, checkBoardMembership, updateBoard)
+  .delete(protect, checkBoardMembership, deleteBoard);
 
-// MOUNT the list router on the specific path
-// Any request to /:boardId/lists will be forwarded to our listRouter
-router.use("/:boardId/lists", listRouter);
+router.use("/:boardId/lists", protect, checkBoardMembership, listRouter);
 module.exports = router;

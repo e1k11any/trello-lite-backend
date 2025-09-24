@@ -14,8 +14,10 @@ const createBoard = async (req, res) => {
     const newBoard = await Board.create({
       name,
       description,
-      user: req.user._id, // Assign the logged-in user's ID
+      owner: req.user._id, // Set the owner
+      members: [{ user: req.user._id, role: "admin" }], // Add owner as an admin
     });
+
     // Respond with a 201 (Created) status and the new board data
     res.status(201).json(newBoard);
   } catch (error) {
@@ -46,24 +48,33 @@ const getAllBoards = async (req, res) => {
 // @desc    Get a single board by ID
 // @route   GET /api/boards/:id
 // @access  Public (for now)
+// const getBoardById = async (req, res) => {
+//   try {
+//     const board = await Board.findById(req.params.id);
+//     if (!board) {
+//       return res.status(404).json({ message: "Board not found" });
+//     }
+//     res.status(200).json(board);
+//   } catch (error) {
+//     res
+//       .status(500)
+//       .json({ message: "Error fetching board", error: error.message });
+//   }
+// };
 const getBoardById = async (req, res) => {
-  try {
-    const board = await Board.findById(req.params.id);
-    if (!board) {
-      return res.status(404).json({ message: "Board not found" });
-    }
-    res.status(200).json(board);
-  } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error fetching board", error: error.message });
-  }
+  // The board is already fetched by the middleware and attached to req.board
+  res.status(200).json(req.board);
 };
 
 // @desc    Update a board
 // @route   PUT /api/boards/:id
 // @access  Public (for now)
 const updateBoard = async (req, res) => {
+  if (req.membership.role !== "admin") {
+    return res
+      .status(403)
+      .json({ message: "Forbidden: Only admins can update the board" });
+  }
   try {
     const updatedBoard = await Board.findByIdAndUpdate(
       req.params.id,
@@ -90,6 +101,11 @@ const updateBoard = async (req, res) => {
 // @route   DELETE /api/boards/:id
 // @access  Public (for now)
 const deleteBoard = async (req, res) => {
+  if (!req.board.owner.equals(req.user._id)) {
+    return res
+      .status(403)
+      .json({ message: "Forbidden: Only the board owner can delete it" });
+  }
   try {
     const board = await Board.findByIdAndDelete(req.params.id);
 
