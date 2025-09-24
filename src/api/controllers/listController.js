@@ -1,6 +1,6 @@
-// src/api/controllers/listController.js
 const List = require("../models/List");
 const Board = require("../models/Board"); // We need this to verify the parent board exists
+const createActivityLog = require("../../utils/createActivityLog");
 
 // @desc    Create a new list for a specific board
 // @route   POST /api/boards/:boardId/lists
@@ -19,6 +19,11 @@ const createList = async (req, res) => {
       name,
       board: boardId, // Link the list to the board
     });
+    await createActivityLog(
+      req.user,
+      `added '${newList.name}' to this board`,
+      boardId
+    );
 
     res.status(201).json(newList);
   } catch (error) {

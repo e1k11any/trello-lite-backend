@@ -1,6 +1,7 @@
 const Card = require("../models/Card");
 const List = require("../models/List");
 const { getIO } = require("../../socket");
+const createActivityLog = require("../../utils/createActivityLog");
 
 // @desc    Create a card for a specific list
 // @route   POST /api/boards/:boardId/lists/:listId/cards
@@ -21,6 +22,11 @@ const createCard = async (req, res) => {
       list: listId,
       board: boardId,
     });
+    await createActivityLog(
+      req.user,
+      `added '${newCard.name}' to this board`,
+      boardId
+    );
     res.status(201).json(newCard);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -57,11 +63,27 @@ const getCardById = async (req, res) => {
 const updateCard = async (req, res) => {
   try {
     const { cardId } = req.params;
+    const originalCard = await Card.findById(cardId);
+
     const updatedCard = await Card.findByIdAndUpdate(cardId, req.body, {
       new: true,
     });
     if (!updatedCard)
       return res.status(404).json({ message: "Card not found" });
+
+    // Check if the card was moved to a new list
+    if (req.body.list && !originalCard.list.equals(updatedCard.list)) {
+      const fromList = await List.findById(originalCard.list);
+      const toList = await List.findById(updatedCard.list);
+      await createActivityLog(
+        req.user,
+        `moved '${updatedCard.name}' from '${fromList.name}' to '${toList.name}'`,
+        updatedCard.board
+      );
+    }
+
+    io.to(updatedCard.board.toString()).emit("card:update", updatedCard);
+    res.status(200).json(updatedCard);
 
     // --- REAL-TIME EMIT ---
     // Get the io instance

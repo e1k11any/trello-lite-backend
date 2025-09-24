@@ -1,5 +1,7 @@
 const Board = require("../models/Board");
 const User = require("../models/User");
+const createActivityLog = require("../../utils/createActivityLog");
+const Activity = require("../models/Activity"); // Import the Activity model
 
 // @desc    Create a new board
 // @route   POST /api/boards
@@ -18,6 +20,7 @@ const createBoard = async (req, res) => {
       owner: req.user._id, // Set the owner
       members: [{ user: req.user._id, role: "admin" }], // Add owner as an admin
     });
+    await createActivityLog(req.user, `created this board`, newBoard._id);
 
     // Respond with a 201 (Created) status and the new board data
     res.status(201).json(newBoard);
@@ -169,12 +172,31 @@ const addMemberToBoard = async (req, res) => {
       "members.user",
       "name email"
     );
+    await createActivityLog(
+      req.user,
+      `added ${userToAdd.name} to this board`,
+      req.board._id
+    );
 
     res.status(200).json(updatedBoard.members);
   } catch (error) {
     res
       .status(500)
       .json({ message: "Error adding member", error: error.message });
+  }
+};
+
+const getBoardActivities = async (req, res) => {
+  try {
+    const activities = await Activity.find({ board: req.board._id })
+      .sort({ createdAt: -1 }) // Show newest first
+      .populate("user", "name"); // Replace user ID with user's name
+
+    res.status(200).json(activities);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching activities", error: error.message });
   }
 };
 
@@ -185,4 +207,5 @@ module.exports = {
   updateBoard,
   deleteBoard,
   addMemberToBoard,
+  getBoardActivities,
 };
